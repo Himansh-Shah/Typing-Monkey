@@ -1,0 +1,3 @@
+/home/himansh/Desktop/Workspace/personal/Projects/monkeytype_cli/build/CMakeFiles/typing_monkey.dir
+/home/himansh/Desktop/Workspace/personal/Projects/monkeytype_cli/build/CMakeFiles/edit_cache.dir
+/home/himansh/Desktop/Workspace/personal/Projects/monkeytype_cli/build/CMakeFiles/rebuild_cache.dir
