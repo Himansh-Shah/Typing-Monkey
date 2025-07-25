@@ -203,4 +203,6 @@ CMakeFiles/typing_monkey.dir/src/main.cpp.o: \
  /usr/include/c++/11/bits/unordered_map.h \
  /usr/include/c++/11/bits/erase_if.h /usr/include/curses.h \
  /usr/include/ncurses_dll.h /usr/include/unctrl.h /usr/include/curses.h \
- /home/himansh/Desktop/Workspace/personal/Projects/monkeytype_cli/src/WordGenerator.h
+ /home/himansh/Desktop/Workspace/personal/Projects/monkeytype_cli/src/WordGenerator.h \
+ /usr/include/c++/11/chrono /usr/include/c++/11/ratio \
+ /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h

@@ -1,81 +1,73 @@
-// src/main.cpp
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <random>
-#include <algorithm>
 #include <ncurses.h>
 #include "WordGenerator.h"
-#include <chrono>
-
-
-
+#include <iostream>
+#include <cstring>
+#include <vector>
+#include <string>
 
 int main() {
     WordGenerator wg = WordGenerator("data/words.txt");
-    std::string word = wg.getSentence(10);
+    std::string sentence = wg.getSentence(150) + " ";
+    int maxrow, maxcol;
+    char title[] = 
+R"(    
+ _____ _____ _  _  _  __     _   _  _  _  _  _  ______ __
+|_ _\ V / o \ || \| |/ _|   | \_/ |/ \| \| || |// __\ V /
+ | | \ /|  _/ || \\ ( |_n__ | \_/ ( o ) \\ ||  (| _| \ / 
+ |_| |_||_| |_||_|\_|\__/__||_| |_|\_/|_|\_||_|\\___||_|)";
+
+
 
     initscr();
+    getmaxyx(stdscr, maxrow, maxcol);
     start_color();
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
     init_pair(2, COLOR_RED, COLOR_BLACK);
+    init_pair(3, COLOR_WHITE, COLOR_BLACK);
+    init_pair(4, COLOR_GREEN, COLOR_BLACK);
+    bkgd(COLOR_PAIR(3));
+    attron(COLOR_PAIR(1)); 
+    mvprintw(0, 0, "%s" , title);
+    mvprintw(6, 3, "Raw Words Per Minute :");
+    mvprintw(7, 3, "Words Per Minute :");
+    attroff(COLOR_PAIR(1));
+    
 
-    int len = word.size();
-    std::string st = "";
-    int i = 0;
-    int crt = 0;
-    int completed_words = 0; 
-    auto begin = chrono::high_resolution_clock::now();
+    vector<int> valid = {};
+    int correct =0;
+    int ch;
 
-    printw("%s", word.c_str());
-    while (i < len) {
-        int ch = getch();
-        if(ch == (int)' ') completed_words++;
-        if(ch == '\n') break;
-        if(ch == 27) break;
-        if(ch == KEY_BACKSPACE || ch == 127){ 
-            if(st.back() == word[crt]) crt--;
-            st.pop_back();
-            i=i-2;
-        }
-        else{ 
-            st += static_cast<char>(ch);
-            if(word[crt+1]==ch) crt++;
-        }
-        clear();
-
-
-        for (int j = 0; j < st.size(); j++) {
-            if (j < len && st[j] == word[j]) {
-                attron(COLOR_PAIR(1));
-                printw("%c", st[j]);
-                attroff(COLOR_PAIR(1));
-            } else if (j < len) {
+    while(correct<sentence.size() && ch!=27){
+        for(int i=0;i<valid.size();i++){
+            if(valid[i]){ 
+                attron(COLOR_PAIR(4));
+                mvaddch(maxrow / 2, maxcol / 2 - valid.size() + i, sentence[i]);
+                attroff(COLOR_PAIR(4));
+            }
+            else{
                 attron(COLOR_PAIR(2));
-                printw("%c", st[j]);
+                mvaddch(maxrow / 2, maxcol / 2 - valid.size() + i,  sentence[i]);
                 attroff(COLOR_PAIR(2));
             }
         }
-
-
-        if (crt < len) {
-            printw("%s", word.substr(i+1, len-i).c_str());
-        }
-        auto end = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::seconds>(end - begin).count();
-        string wpm = to_string(completed_words/((duration/60)+1));
-        string time_elapsed = to_string(duration);
-
-        mvaddstr(10, 30, "Words Per second :");
-        mvaddstr(10, 60, wpm.c_str());
-        mvaddstr(11, 30, "Time Elapsed :");
-        mvaddstr(11, 60, time_elapsed.c_str());
+        mvprintw(maxrow /2, maxcol /2, "%s", sentence.substr(correct, maxcol/2).c_str());
         refresh();
-        i++;
+        ch=getch();
+        if(valid.size() && ch == 127){ 
+                valid.pop_back();
+                correct--;
+                continue;
+        }
+        if(ch == (int)sentence[correct]){ 
+            valid.emplace_back(1);
+        }
+        else{
+            valid.emplace_back(0);
+        }
+        correct++;
     }
-
     endwin();
     return 0;
 }
+
 
